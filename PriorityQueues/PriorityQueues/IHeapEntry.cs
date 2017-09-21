@@ -2,9 +2,9 @@
 
 namespace PriorityQueues
 {
-    public interface IHeapEntry<TKey, TValue>
+    public interface IHeapEntry<TKey, TPriority>
     {
         TKey Key { get; }
-        TValue Value { get; }
+        TPriority Priority { get; }
     }
 }

@@ -78,7 +78,7 @@ namespace Test
 
         [ExpectedException(typeof(ArgumentException))]
         [TestMethod]
-        public void HeapIncreaseInvalidNewValueTest()
+        public void HeapIncreaseInvalidNewpriorityTest()
         {
             var heap = Create();
             var entry = heap.Insert("Key", 0);

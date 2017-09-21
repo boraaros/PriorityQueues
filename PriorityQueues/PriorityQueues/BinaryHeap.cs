@@ -3,29 +3,29 @@ using System.Collections.Generic;
 
 namespace PriorityQueues
 {
-    public sealed class BinaryHeap<TKey, TValue> : IPriorityQueue<TKey, TValue>
+    public sealed class BinaryHeap<TKey, TPriority> : IPriorityQueue<TKey, TPriority>
     {
-        internal sealed class BinaryHeapNode : IHeapEntry<TKey, TValue>
+        internal sealed class BinaryHeapNode : IHeapEntry<TKey, TPriority>
         {
             public TKey Key { get; private set; }
-            public TValue Value { get; internal set; }
+            public TPriority Priority { get; internal set; }
             internal int Index { get; set; }
 
-            internal BinaryHeapNode(TKey key, TValue value, int index)
+            internal BinaryHeapNode(TKey key, TPriority priority, int index)
             {
                 Key = key;
-                Value = value;
+                Priority = priority;
                 Index = index;
             }
         }
 
         private const int InitialSize = 16;
         private const int Degree = 2;
-        private IComparer<TValue> comparer;
+        private IComparer<TPriority> comparer;
 
         private BinaryHeapNode[] heap;
 
-        public IHeapEntry<TKey, TValue> Minimum
+        public IHeapEntry<TKey, TPriority> Minimum
         {
             get 
             {
@@ -39,7 +39,7 @@ namespace PriorityQueues
 
         public int Count { get; private set; }
 
-        public BinaryHeap(IComparer<TValue> comparer = null)
+        public BinaryHeap(IComparer<TPriority> comparer = null)
         {
             if (comparer != null)
             {
@@ -47,32 +47,32 @@ namespace PriorityQueues
             }
             else
             {
-                this.comparer = Comparer<TValue>.Default;
+                this.comparer = Comparer<TPriority>.Default;
             }
             heap = new BinaryHeapNode[InitialSize];
         }
 
-        public IHeapEntry<TKey, TValue> Insert(TKey key, TValue value)
+        public IHeapEntry<TKey, TPriority> Insert(TKey key, TPriority priority)
         {
             if (key == null)
             {
                 throw new ArgumentNullException("key");
             }
-            if (value == null)
+            if (priority == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException("priority");
             }
             if (Count == heap.Length - 1)
             {
                 Array.Resize(ref heap, heap.Length * Degree);
             }
-            BinaryHeapNode node = new BinaryHeapNode(key, value, ++Count);
+            BinaryHeapNode node = new BinaryHeapNode(key, priority, ++Count);
             heap[Count] = node;
             HeapifyUp(node);
             return node;
         }
 
-        public IHeapEntry<TKey, TValue> RemoveMinimum()
+        public IHeapEntry<TKey, TPriority> RemoveMinimum()
         {
             if (Count == 0)
             {
@@ -83,26 +83,26 @@ namespace PriorityQueues
             return min;
         }
 
-        public void Increase(IHeapEntry<TKey, TValue> entry, TValue value)
+        public void Increase(IHeapEntry<TKey, TPriority> entry, TPriority priority)
         {
             if (entry == null)
             {
                 throw new ArgumentNullException("entry");
             }
-            if (value == null)
+            if (priority == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException("priority");
             }
-            if (comparer.Compare(value, entry.Value) > 0)
+            if (comparer.Compare(priority, entry.Priority) > 0)
             {
-                throw new ArgumentException("Invalid new value!");
+                throw new ArgumentException("Invalid new priority!");
             }
             BinaryHeapNode node = (BinaryHeapNode)entry;
-            node.Value = value;
+            node.Priority = priority;
             HeapifyUp(node);
         }
 
-        public void Remove(IHeapEntry<TKey, TValue> entry)
+        public void Remove(IHeapEntry<TKey, TPriority> entry)
         {
             if (entry == null)
             {
@@ -130,7 +130,7 @@ namespace PriorityQueues
             BinaryHeapNode parent = Parent(node.Index);
             int to = node.Index;
 
-            while (parent != null && comparer.Compare(parent.Value, node.Value) > 0)
+            while (parent != null && comparer.Compare(parent.Priority, node.Priority) > 0)
             {
                 int grandParent = parent.Index / Degree;
                 int temp = parent.Index;
@@ -181,7 +181,7 @@ namespace PriorityQueues
             }
             else
             {
-                return comparer.Compare(heap[temp + 1].Value, heap[temp].Value) > 0 ?
+                return comparer.Compare(heap[temp + 1].Priority, heap[temp].Priority) > 0 ?
                 heap[temp] : heap[temp + 1];
             }
         }

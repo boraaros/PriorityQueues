@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace PriorityQueues
 {
-    public sealed class FibonacciHeap<TKey, TValue> : IPriorityQueue<TKey, TValue>
+    public sealed class FibonacciHeap<TKey, TPriority> : IPriorityQueue<TKey, TPriority>
     {
-        internal sealed class FibonacciNode : IHeapEntry<TKey, TValue>
+        internal sealed class FibonacciNode : IHeapEntry<TKey, TPriority>
         {
             internal FibonacciNode Parent = null;
             internal FibonacciNode Left;
@@ -14,20 +14,20 @@ namespace PriorityQueues
             internal int Degree = 0;
             internal bool IsMarked = false;
             public TKey Key { get; internal set; }
-            public TValue Value { get; internal set; }
+            public TPriority Priority { get; internal set; }
 
-            internal FibonacciNode(TKey key, TValue value)
+            internal FibonacciNode(TKey key, TPriority priority)
             {
                 Key = key;
-                Value = value;
+                Priority = priority;
             }
         }
 
-        private IComparer<TValue> comparer;
+        private IComparer<TPriority> comparer;
 
         private FibonacciNode minimum;
 
-        public IHeapEntry<TKey, TValue> Minimum
+        public IHeapEntry<TKey, TPriority> Minimum
         {
             get 
             {
@@ -35,13 +35,13 @@ namespace PriorityQueues
                 {
                     throw new InvalidOperationException("Heap contains no elements");
                 }
-                return (IHeapEntry<TKey, TValue>)minimum; 
+                return (IHeapEntry<TKey, TPriority>)minimum; 
             }
         }
 
         public int Count { get; private set; }
 
-        public FibonacciHeap(IComparer<TValue> comparer = null)
+        public FibonacciHeap(IComparer<TPriority> comparer = null)
         {
             if (comparer != null)
             {
@@ -49,21 +49,21 @@ namespace PriorityQueues
             }
             else
             {
-                this.comparer = Comparer<TValue>.Default;
+                this.comparer = Comparer<TPriority>.Default;
             }
         }
 
-        public IHeapEntry<TKey, TValue> Insert(TKey key, TValue value)
+        public IHeapEntry<TKey, TPriority> Insert(TKey key, TPriority priority)
         {
             if (key == null)
             {
                 throw new ArgumentNullException("key");
             }
-            if (value == null)
+            if (priority == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException("priority");
             }
-            FibonacciNode node = new FibonacciNode(key, value);
+            FibonacciNode node = new FibonacciNode(key, priority);
 
             if (Count == 0)
             {
@@ -73,7 +73,7 @@ namespace PriorityQueues
             {
                 Paste(minimum, node);
 
-                if (comparer.Compare(minimum.Value, value) > 0)
+                if (comparer.Compare(minimum.Priority, priority) > 0)
                 {
                     minimum = node;
                 }
@@ -82,35 +82,35 @@ namespace PriorityQueues
             return node;
         }
 
-        public void Increase(IHeapEntry<TKey, TValue> entry, TValue value)
+        public void Increase(IHeapEntry<TKey, TPriority> entry, TPriority priority)
         {
             if (entry == null)
             {
                 throw new ArgumentNullException("entry");
             }
-            if (value == null)
+            if (priority == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException("priority");
             }
-            if (comparer.Compare(value, entry.Value) > 0)
+            if (comparer.Compare(priority, entry.Priority) > 0)
             {
-                throw new ArgumentException("Invalid new value!");
+                throw new ArgumentException("Invalid new priority!");
             }
             FibonacciNode node = (FibonacciNode)entry;
 
-            if (node.Parent != null && comparer.Compare(node.Parent.Value, value) > 0)
+            if (node.Parent != null && comparer.Compare(node.Parent.Priority, priority) > 0)
             {
                 CutNode(node);
             }
-            node.Value = value;
+            node.Priority = priority;
 
-            if (comparer.Compare(minimum.Value, value) > 0)
+            if (comparer.Compare(minimum.Priority, priority) > 0)
             {
                 minimum = node;
             }
         }
 
-        public IHeapEntry<TKey, TValue> RemoveMinimum()
+        public IHeapEntry<TKey, TPriority> RemoveMinimum()
         {
             if (Count == 0)
             {
@@ -138,7 +138,7 @@ namespace PriorityQueues
             return min;
         }
 
-        public void Remove(IHeapEntry<TKey, TValue> entry)
+        public void Remove(IHeapEntry<TKey, TPriority> entry)
         {
             if (entry == null)
             {
@@ -159,7 +159,7 @@ namespace PriorityQueues
             FibonacciNode min = minimum.Right;
             for (FibonacciNode node = minimum.Right.Right; node != minimum.Right; node = node.Right)
             {
-                if (comparer.Compare(min.Value, node.Value) > 0)
+                if (comparer.Compare(min.Priority, node.Priority) > 0)
                 {
                     min = node;
                 }
@@ -187,7 +187,7 @@ namespace PriorityQueues
                     {
                         FibonacciNode n = concat[node.Degree];
                         concat.Remove(node.Degree);
-                        if (comparer.Compare(n.Value, node.Value) > 0)
+                        if (comparer.Compare(n.Priority, node.Priority) > 0)
                         {
                             Merge(node, n);
                         }
