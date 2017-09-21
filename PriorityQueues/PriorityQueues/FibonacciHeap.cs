@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace PriorityQueues
 {
-    public sealed class FibonacciHeap<TKey, TPriority> : IPriorityQueue<TKey, TPriority>
+    public sealed class FibonacciHeap<TItem, TPriority> : IPriorityQueue<TItem, TPriority>
     {
-        internal sealed class FibonacciNode : IHeapEntry<TKey, TPriority>
+        internal sealed class FibonacciNode : IHeapEntry<TItem, TPriority>
         {
             internal FibonacciNode Parent = null;
             internal FibonacciNode Left;
@@ -13,12 +13,12 @@ namespace PriorityQueues
             internal FibonacciNode FirstChild = null;
             internal int Degree = 0;
             internal bool IsMarked = false;
-            public TKey Key { get; internal set; }
+            public TItem Item { get; internal set; }
             public TPriority Priority { get; internal set; }
 
-            internal FibonacciNode(TKey key, TPriority priority)
+            internal FibonacciNode(TItem item, TPriority priority)
             {
-                Key = key;
+                Item = item;
                 Priority = priority;
             }
         }
@@ -27,7 +27,7 @@ namespace PriorityQueues
 
         private FibonacciNode minimum;
 
-        public IHeapEntry<TKey, TPriority> Minimum
+        public IHeapEntry<TItem, TPriority> Minimum
         {
             get 
             {
@@ -35,7 +35,7 @@ namespace PriorityQueues
                 {
                     throw new InvalidOperationException("Heap contains no elements");
                 }
-                return (IHeapEntry<TKey, TPriority>)minimum; 
+                return (IHeapEntry<TItem, TPriority>)minimum; 
             }
         }
 
@@ -53,17 +53,17 @@ namespace PriorityQueues
             }
         }
 
-        public IHeapEntry<TKey, TPriority> Insert(TKey key, TPriority priority)
+        public IHeapEntry<TItem, TPriority> Insert(TItem item, TPriority priority)
         {
-            if (key == null)
+            if (item == null)
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException("item");
             }
             if (priority == null)
             {
                 throw new ArgumentNullException("priority");
             }
-            FibonacciNode node = new FibonacciNode(key, priority);
+            FibonacciNode node = new FibonacciNode(item, priority);
 
             if (Count == 0)
             {
@@ -82,7 +82,7 @@ namespace PriorityQueues
             return node;
         }
 
-        public void Increase(IHeapEntry<TKey, TPriority> entry, TPriority priority)
+        public void Increase(IHeapEntry<TItem, TPriority> entry, TPriority priority)
         {
             if (entry == null)
             {
@@ -115,7 +115,7 @@ namespace PriorityQueues
             }
         }
 
-        public IHeapEntry<TKey, TPriority> RemoveMinimum()
+        public IHeapEntry<TItem, TPriority> RemoveMinimum()
         {
             if (Count == 0)
             {
@@ -143,7 +143,7 @@ namespace PriorityQueues
             return min;
         }
 
-        public void Remove(IHeapEntry<TKey, TPriority> entry)
+        public void Remove(IHeapEntry<TItem, TPriority> entry)
         {
             if (entry == null)
             {

@@ -44,7 +44,7 @@ namespace Test
         public void HeapRemoveTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Key", 0);
+            var entry = heap.Insert("Item", 0);
             heap.Remove(entry);
             Assert.AreEqual(0, heap.Count);
         }
@@ -54,7 +54,7 @@ namespace Test
         public void HeapRemoveNotContainedTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Key", 0);
+            var entry = heap.Insert("Item", 0);
             heap.Remove(entry);
             heap.Remove(entry);
         }
@@ -63,7 +63,7 @@ namespace Test
         public void HeapIncreaseTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Key", 0);
+            var entry = heap.Insert("Item", 0);
             heap.Increase(entry, -1);
         }
 
@@ -72,7 +72,7 @@ namespace Test
         public void HeapIncreaseNullEntryTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Key", 0);
+            var entry = heap.Insert("Item", 0);
             heap.Increase(null, -1);
         }
 
@@ -81,7 +81,7 @@ namespace Test
         public void HeapIncreaseInvalidNewpriorityTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Key", 0);
+            var entry = heap.Insert("Item", 0);
             heap.Increase(entry, 1);
         }
 
@@ -89,7 +89,7 @@ namespace Test
         public void HeapInsertTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Key", 0);
+            var entry = heap.Insert("Item", 0);
             Assert.AreEqual(1, heap.Count);
         }
 

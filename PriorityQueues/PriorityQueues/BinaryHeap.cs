@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace PriorityQueues
 {
-    public sealed class BinaryHeap<TKey, TPriority> : IPriorityQueue<TKey, TPriority>
+    public sealed class BinaryHeap<TItem, TPriority> : IPriorityQueue<TItem, TPriority>
     {
-        internal sealed class BinaryHeapNode : IHeapEntry<TKey, TPriority>
+        internal sealed class BinaryHeapNode : IHeapEntry<TItem, TPriority>
         {
-            public TKey Key { get; private set; }
+            public TItem Item { get; private set; }
             public TPriority Priority { get; internal set; }
             internal int Index { get; set; }
 
-            internal BinaryHeapNode(TKey key, TPriority priority, int index)
+            internal BinaryHeapNode(TItem item, TPriority priority, int index)
             {
-                Key = key;
+                Item = item;
                 Priority = priority;
                 Index = index;
             }
@@ -25,7 +25,7 @@ namespace PriorityQueues
 
         private BinaryHeapNode[] heap;
 
-        public IHeapEntry<TKey, TPriority> Minimum
+        public IHeapEntry<TItem, TPriority> Minimum
         {
             get 
             {
@@ -52,11 +52,11 @@ namespace PriorityQueues
             heap = new BinaryHeapNode[InitialSize];
         }
 
-        public IHeapEntry<TKey, TPriority> Insert(TKey key, TPriority priority)
+        public IHeapEntry<TItem, TPriority> Insert(TItem item, TPriority priority)
         {
-            if (key == null)
+            if (item == null)
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException("item");
             }
             if (priority == null)
             {
@@ -66,13 +66,13 @@ namespace PriorityQueues
             {
                 Array.Resize(ref heap, heap.Length * Degree);
             }
-            BinaryHeapNode node = new BinaryHeapNode(key, priority, ++Count);
+            BinaryHeapNode node = new BinaryHeapNode(item, priority, ++Count);
             heap[Count] = node;
             HeapifyUp(node);
             return node;
         }
 
-        public IHeapEntry<TKey, TPriority> RemoveMinimum()
+        public IHeapEntry<TItem, TPriority> RemoveMinimum()
         {
             if (Count == 0)
             {
@@ -83,7 +83,7 @@ namespace PriorityQueues
             return min;
         }
 
-        public void Increase(IHeapEntry<TKey, TPriority> entry, TPriority priority)
+        public void Increase(IHeapEntry<TItem, TPriority> entry, TPriority priority)
         {
             if (entry == null)
             {
@@ -106,7 +106,7 @@ namespace PriorityQueues
             HeapifyUp(node);
         }
 
-        public void Remove(IHeapEntry<TKey, TPriority> entry)
+        public void Remove(IHeapEntry<TItem, TPriority> entry)
         {
             if (entry == null)
             {

@@ -10,13 +10,13 @@ namespace PriorityQueues
     //Increase    ||  O(log n)    |   O(1)        |
     //Remove      ||  O(log n)    |   O(log n)    |
 
-    public interface IPriorityQueue<TKey, TPriority>
+    public interface IPriorityQueue<TItem, TPriority>
     {
-        IHeapEntry<TKey, TPriority> Minimum { get; }
+        IHeapEntry<TItem, TPriority> Minimum { get; }
         int Count { get; }
-        IHeapEntry<TKey, TPriority> Insert(TKey key, TPriority priority);
-        IHeapEntry<TKey, TPriority> RemoveMinimum();
-        void Increase(IHeapEntry<TKey, TPriority> entry, TPriority priority);
-        void Remove(IHeapEntry<TKey, TPriority> entry);
+        IHeapEntry<TItem, TPriority> Insert(TItem item, TPriority priority);
+        IHeapEntry<TItem, TPriority> RemoveMinimum();
+        void Increase(IHeapEntry<TItem, TPriority> entry, TPriority priority);
+        void Remove(IHeapEntry<TItem, TPriority> entry);
     }
 }
