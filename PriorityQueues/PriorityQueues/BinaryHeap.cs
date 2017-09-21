@@ -31,7 +31,7 @@ namespace PriorityQueues
             {
                 if (Count == 0)
                 {
-                    throw new InvalidOperationException("Heap contains no elements");
+                    throw new InvalidOperationException("Binary heap does not contain elements");
                 }
                 return heap[1]; 
             }
@@ -76,7 +76,7 @@ namespace PriorityQueues
         {
             if (Count == 0)
             {
-                throw new InvalidOperationException("Heap is empty!");
+                throw new InvalidOperationException("Binary heap is empty!");
             }
             BinaryHeapNode min = heap[1];
             Remove(heap[1]);
@@ -95,9 +95,13 @@ namespace PriorityQueues
             }
             if (comparer.Compare(priority, entry.Priority) > 0)
             {
-                throw new ArgumentException("Invalid new priority!");
+                throw new ArgumentException(string.Format("Invalid new priority: {0} (old value: {1})!", priority, entry.Priority));
             }
-            BinaryHeapNode node = (BinaryHeapNode)entry;
+            BinaryHeapNode node = entry as BinaryHeapNode;
+            if (node == null)
+            {
+                throw new InvalidCastException("Invalid heap entry format!");
+            }
             node.Priority = priority;
             HeapifyUp(node);
         }
@@ -108,7 +112,11 @@ namespace PriorityQueues
             {
                 throw new ArgumentNullException("entry");
             }
-            BinaryHeapNode temp = (BinaryHeapNode)entry;
+            BinaryHeapNode temp = entry as BinaryHeapNode;
+            if (temp == null)
+            {
+                throw new InvalidCastException("Invalid heap entry format!");
+            }
             if (temp.Index == 0)
             {
                 throw new ArgumentException("Heap does not contain this node!");

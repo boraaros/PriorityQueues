@@ -96,7 +96,12 @@ namespace PriorityQueues
             {
                 throw new ArgumentException("Invalid new priority!");
             }
-            FibonacciNode node = (FibonacciNode)entry;
+
+            FibonacciNode node = entry as FibonacciNode;
+            if (node == null)
+            {
+                throw new InvalidCastException("Invalid heap entry format!");
+            }
 
             if (node.Parent != null && comparer.Compare(node.Parent.Priority, priority) > 0)
             {
@@ -144,7 +149,13 @@ namespace PriorityQueues
             {
                 throw new ArgumentNullException("entry");
             }
-            FibonacciNode temp = (FibonacciNode)entry;
+
+            FibonacciNode temp = entry as FibonacciNode;
+            if (temp == null)
+            {
+                throw new InvalidCastException("Invalid heap entry format!");
+            }
+
             if (temp.Left == null)
             {
                 throw new ArgumentException("Heap does not contain this node!");
