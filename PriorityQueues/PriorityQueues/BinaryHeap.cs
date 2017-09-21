@@ -5,7 +5,7 @@ namespace PriorityQueues
 {
     public sealed class BinaryHeap<TItem, TPriority> : IPriorityQueue<TItem, TPriority>
     {
-        internal sealed class BinaryHeapNode : IHeapEntry<TItem, TPriority>
+        private sealed class BinaryHeapNode : IHeapEntry<TItem, TPriority>
         {
             public TItem Item { get; private set; }
             public TPriority Priority { get; internal set; }

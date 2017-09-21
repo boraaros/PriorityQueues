@@ -5,7 +5,7 @@ namespace PriorityQueues
 {
     public sealed class FibonacciHeap<TItem, TPriority> : IPriorityQueue<TItem, TPriority>
     {
-        internal sealed class FibonacciNode : IHeapEntry<TItem, TPriority>
+        private sealed class FibonacciNode : IHeapEntry<TItem, TPriority>
         {
             internal FibonacciNode Parent = null;
             internal FibonacciNode Left;
