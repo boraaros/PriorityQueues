@@ -5,7 +5,7 @@ namespace PriorityQueues
 {
     public sealed class BinaryHeap<TItem, TPriority> : IPriorityQueue<TItem, TPriority>
     {
-        private sealed class BinaryHeapNode : IHeapEntry<TItem, TPriority>
+        private sealed class BinaryHeapNode : IHeapEntry<TItem>
         {
             public TItem Item { get; private set; }
             public TPriority Priority { get; internal set; }
@@ -25,7 +25,7 @@ namespace PriorityQueues
 
         private BinaryHeapNode[] heap;
 
-        public IHeapEntry<TItem, TPriority> Peek
+        public TItem Peek
         {
             get 
             {
@@ -33,7 +33,7 @@ namespace PriorityQueues
                 {
                     throw new InvalidOperationException("Binary heap does not contain elements");
                 }
-                return heap[1]; 
+                return heap[1].Item; 
             }
         }
 
@@ -65,7 +65,7 @@ namespace PriorityQueues
             return this.GetEnumerator();
         }
 
-        public IHeapEntry<TItem, TPriority> Enqueue(TItem item, TPriority priority)
+        public IHeapEntry<TItem> Enqueue(TItem item, TPriority priority)
         {
             if (item == null)
             {
@@ -85,7 +85,7 @@ namespace PriorityQueues
             return node;
         }
 
-        public IHeapEntry<TItem, TPriority> Dequeue()
+        public TItem Dequeue()
         {
             if (Count == 0)
             {
@@ -93,10 +93,10 @@ namespace PriorityQueues
             }
             BinaryHeapNode min = heap[1];
             Remove(heap[1]);
-            return min;
+            return min.Item;
         }
 
-        public void Increase(IHeapEntry<TItem, TPriority> entry, TPriority priority)
+        public void Increase(IHeapEntry<TItem> entry, TPriority priority)
         {
             if (entry == null)
             {
@@ -105,21 +105,21 @@ namespace PriorityQueues
             if (priority == null)
             {
                 throw new ArgumentNullException("priority");
-            }
-            if (comparer.Compare(priority, entry.Priority) > 0)
-            {
-                throw new ArgumentException(string.Format("Invalid new priority: {0} (old value: {1})!", priority, entry.Priority));
-            }
+            }   
             BinaryHeapNode node = entry as BinaryHeapNode;
             if (node == null)
             {
                 throw new InvalidCastException("Invalid heap entry format!");
             }
+            if (comparer.Compare(priority, node.Priority) > 0)
+            {
+                throw new ArgumentException(string.Format("Invalid new priority: {0} (old value: {1})!", priority, node.Priority));
+            }
             node.Priority = priority;
             HeapifyUp(node);
         }
 
-        public void Remove(IHeapEntry<TItem, TPriority> entry)
+        public void Remove(IHeapEntry<TItem> entry)
         {
             if (entry == null)
             {

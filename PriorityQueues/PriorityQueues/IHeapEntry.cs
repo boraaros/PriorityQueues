@@ -2,9 +2,8 @@
 
 namespace PriorityQueues
 {
-    public interface IHeapEntry<TItem, TPriority>
+    public interface IHeapEntry<TItem>
     {
         TItem Item { get; }
-        TPriority Priority { get; }
     }
 }

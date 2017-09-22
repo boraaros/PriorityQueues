@@ -5,7 +5,7 @@ namespace PriorityQueues
 {
     public sealed class FibonacciHeap<TItem, TPriority> : IPriorityQueue<TItem, TPriority>
     {
-        private sealed class FibonacciNode : IHeapEntry<TItem, TPriority>
+        private sealed class FibonacciNode : IHeapEntry<TItem>
         {
             public FibonacciNode Parent = null;
             public FibonacciNode Left;
@@ -27,7 +27,7 @@ namespace PriorityQueues
 
         private FibonacciNode minimum;
 
-        public IHeapEntry<TItem, TPriority> Peek
+        public TItem Peek
         {
             get 
             {
@@ -35,7 +35,7 @@ namespace PriorityQueues
                 {
                     throw new InvalidOperationException("Heap contains no elements");
                 }
-                return (IHeapEntry<TItem, TPriority>)minimum; 
+                return minimum.Item; 
             }
         }
 
@@ -76,7 +76,7 @@ namespace PriorityQueues
             return this.GetEnumerator();
         }
 
-        public IHeapEntry<TItem, TPriority> Enqueue(TItem item, TPriority priority)
+        public IHeapEntry<TItem> Enqueue(TItem item, TPriority priority)
         {
             if (item == null)
             {
@@ -105,7 +105,7 @@ namespace PriorityQueues
             return node;
         }
 
-        public void Increase(IHeapEntry<TItem, TPriority> entry, TPriority priority)
+        public void Increase(IHeapEntry<TItem> entry, TPriority priority)
         {
             if (entry == null)
             {
@@ -115,17 +115,15 @@ namespace PriorityQueues
             {
                 throw new ArgumentNullException("priority");
             }
-            if (comparer.Compare(priority, entry.Priority) > 0)
-            {
-                throw new ArgumentException("Invalid new priority!");
-            }
-
             FibonacciNode node = entry as FibonacciNode;
             if (node == null)
             {
                 throw new InvalidCastException("Invalid heap entry format!");
             }
-
+            if (comparer.Compare(priority, node.Priority) > 0)
+            {
+                throw new ArgumentException("Invalid new priority!");
+            }
             if (node.Parent != null && comparer.Compare(node.Parent.Priority, priority) > 0)
             {
                 CutNode(node);
@@ -138,7 +136,7 @@ namespace PriorityQueues
             }
         }
 
-        public IHeapEntry<TItem, TPriority> Dequeue()
+        public TItem Dequeue()
         {
             if (Count == 0)
             {
@@ -151,7 +149,7 @@ namespace PriorityQueues
                 minimum = null;
                 Count--;
                 min.Left = min.Right = null;
-                return min;
+                return min.Item;
             }
             while (minimum.Degree > 0)
             {
@@ -163,10 +161,10 @@ namespace PriorityQueues
             minimum = SearchNewMinimum();
             Count--;
             min.Left = min.Right = null;
-            return min;
+            return min.Item;
         }
 
-        public void Remove(IHeapEntry<TItem, TPriority> entry)
+        public void Remove(IHeapEntry<TItem> entry)
         {
             if (entry == null)
             {
