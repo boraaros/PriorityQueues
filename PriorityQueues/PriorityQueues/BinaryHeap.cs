@@ -25,7 +25,7 @@ namespace PriorityQueues
 
         private BinaryHeapNode[] heap;
 
-        public IHeapEntry<TItem, TPriority> Minimum
+        public IHeapEntry<TItem, TPriority> Peek
         {
             get 
             {
@@ -65,7 +65,7 @@ namespace PriorityQueues
             return this.GetEnumerator();
         }
 
-        public IHeapEntry<TItem, TPriority> Insert(TItem item, TPriority priority)
+        public IHeapEntry<TItem, TPriority> Enqueue(TItem item, TPriority priority)
         {
             if (item == null)
             {
@@ -85,7 +85,7 @@ namespace PriorityQueues
             return node;
         }
 
-        public IHeapEntry<TItem, TPriority> RemoveMinimum()
+        public IHeapEntry<TItem, TPriority> Dequeue()
         {
             if (Count == 0)
             {

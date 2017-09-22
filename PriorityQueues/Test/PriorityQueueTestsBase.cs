@@ -22,7 +22,7 @@ namespace Test
         public void EmptyHeapMinimumTest()
         {
             var heap = Create();
-            var minimum = heap.Minimum;
+            var minimum = heap.Peek;
         }
 
         [ExpectedException(typeof(InvalidOperationException))]
@@ -30,7 +30,7 @@ namespace Test
         public void EmptyHeapRemoveMinimumTest()
         {
             var heap = Create();
-            heap.RemoveMinimum();
+            heap.Dequeue();
         }
 
         [ExpectedException(typeof(ArgumentNullException))]
@@ -45,7 +45,7 @@ namespace Test
         public void HeapRemoveTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Item", 0);
+            var entry = heap.Enqueue("Item", 0);
             heap.Remove(entry);
             Assert.AreEqual(0, heap.Count);
         }
@@ -55,7 +55,7 @@ namespace Test
         public void HeapRemoveNotContainedTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Item", 0);
+            var entry = heap.Enqueue("Item", 0);
             heap.Remove(entry);
             heap.Remove(entry);
         }
@@ -64,7 +64,7 @@ namespace Test
         public void HeapIncreaseTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Item", 0);
+            var entry = heap.Enqueue("Item", 0);
             heap.Increase(entry, -1);
         }
 
@@ -73,7 +73,7 @@ namespace Test
         public void HeapIncreaseNullEntryTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Item", 0);
+            var entry = heap.Enqueue("Item", 0);
             heap.Increase(null, -1);
         }
 
@@ -82,7 +82,7 @@ namespace Test
         public void HeapIncreaseInvalidNewpriorityTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Item", 0);
+            var entry = heap.Enqueue("Item", 0);
             heap.Increase(entry, 1);
         }
 
@@ -90,7 +90,7 @@ namespace Test
         public void HeapInsertTest()
         {
             var heap = Create();
-            var entry = heap.Insert("Item", 0);
+            var entry = heap.Enqueue("Item", 0);
             Assert.AreEqual(1, heap.Count);
         }
 
@@ -99,19 +99,19 @@ namespace Test
         public void HeapInsertNullTest()
         {
             var heap = Create();
-            var entry = heap.Insert(null, 0);
+            var entry = heap.Enqueue(null, 0);
         }
 
         [TestMethod]
         public void HeapMultiOperationTest()
         {
             var heap = Create();
-            var entry1 = heap.Insert("2", 2);
-            var entry2 = heap.Insert("4", 4);
-            var entry3 = heap.Insert("6", 6);
+            var entry1 = heap.Enqueue("2", 2);
+            var entry2 = heap.Enqueue("4", 4);
+            var entry3 = heap.Enqueue("6", 6);
             heap.Increase(entry3, 3);
-            Assert.AreEqual(entry1, heap.RemoveMinimum());
-            Assert.AreEqual(entry3, heap.Minimum);
+            Assert.AreEqual(entry1, heap.Dequeue());
+            Assert.AreEqual(entry3, heap.Peek);
             Assert.AreEqual(2, heap.Count);
         }
 
@@ -119,10 +119,10 @@ namespace Test
         public void EnumerableItemsWithoutRemoveTest()
         {
             var heap = Create();
-            var entry1 = heap.Insert("a", 1);
-            var entry2 = heap.Insert("b", 3);
-            var entry3 = heap.Insert("c", 4);
-            var entry4 = heap.Insert("d", 2);
+            var entry1 = heap.Enqueue("a", 1);
+            var entry2 = heap.Enqueue("b", 3);
+            var entry3 = heap.Enqueue("c", 4);
+            var entry4 = heap.Enqueue("d", 2);
             heap.Increase(entry4, 0);
             heap.Increase(entry3, 2);
 
@@ -141,11 +141,11 @@ namespace Test
         public void EnumerableItemsWithRemoveTest()
         {
             var heap = Create();
-            var entry1 = heap.Insert("a", 1);
-            var entry2 = heap.Insert("b", 3);
-            var entry3 = heap.Insert("c", 4);
-            var entry4 = heap.Insert("d", 2);
-            heap.RemoveMinimum();
+            var entry1 = heap.Enqueue("a", 1);
+            var entry2 = heap.Enqueue("b", 3);
+            var entry3 = heap.Enqueue("c", 4);
+            var entry4 = heap.Enqueue("d", 2);
+            heap.Dequeue();
             heap.Remove(entry2);
 
             // Act
@@ -162,8 +162,8 @@ namespace Test
         public void NoComparableTest()
         {
             var pq = new BinaryHeap<string, object>();
-            pq.Insert("", new object());
-            pq.Insert("", new object());
+            pq.Enqueue("", new object());
+            pq.Enqueue("", new object());
         }
     }
 }
