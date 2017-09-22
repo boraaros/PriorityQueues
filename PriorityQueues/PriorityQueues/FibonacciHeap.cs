@@ -7,16 +7,16 @@ namespace PriorityQueues
     {
         private sealed class FibonacciNode : IHeapEntry<TItem, TPriority>
         {
-            internal FibonacciNode Parent = null;
-            internal FibonacciNode Left;
-            internal FibonacciNode Right;
-            internal FibonacciNode FirstChild = null;
-            internal int Degree = 0;
-            internal bool IsMarked = false;
+            public FibonacciNode Parent = null;
+            public FibonacciNode Left;
+            public FibonacciNode Right;
+            public FibonacciNode FirstChild = null;
+            public int Degree = 0;
+            public bool IsMarked = false;
             public TItem Item { get; internal set; }
             public TPriority Priority { get; internal set; }
 
-            internal FibonacciNode(TItem item, TPriority priority)
+            public FibonacciNode(TItem item, TPriority priority)
             {
                 Item = item;
                 Priority = priority;
