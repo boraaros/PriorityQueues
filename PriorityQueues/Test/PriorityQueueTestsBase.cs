@@ -156,5 +156,14 @@ namespace Test
             Assert.IsTrue(items.Contains(entry3.Item));
             Assert.IsTrue(items.Contains(entry4.Item));
         }
+
+        [ExpectedException(typeof(ArgumentException))]
+        [TestMethod]
+        public void NoComparableTest()
+        {
+            var pq = new BinaryHeap<string, object>();
+            pq.Insert("", new object());
+            pq.Insert("", new object());
+        }
     }
 }
