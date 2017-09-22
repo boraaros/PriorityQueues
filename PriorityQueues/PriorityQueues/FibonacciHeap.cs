@@ -53,6 +53,29 @@ namespace PriorityQueues
             }
         }
 
+        public IEnumerator<TItem> GetEnumerator()
+        {
+            if (minimum == null)
+            {
+                yield break;
+            }
+            var current = minimum;
+            do
+            {
+                foreach (var node in EnumerateBranch(current))
+                {
+                    yield return node;
+                }
+                current = current.Right;
+            }
+            while (current != minimum);
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
         public IHeapEntry<TItem, TPriority> Insert(TItem item, TPriority priority)
         {
             if (item == null)
@@ -163,6 +186,24 @@ namespace PriorityQueues
             CutNode(temp);
             minimum = temp;
             RemoveMinimum();
+        }
+
+        private IEnumerable<TItem> EnumerateBranch(FibonacciNode root)
+        {
+            if (root.FirstChild != null)
+            {
+                var current = root.FirstChild;
+                do
+                {
+                    foreach (var node in EnumerateBranch(current))
+                    {
+                        yield return node;
+                    }
+                    current = current.Right;
+                }
+                while (current != root.FirstChild);
+            }
+            yield return root.Item;
         }
 
         private FibonacciNode SearchNewMinimum()

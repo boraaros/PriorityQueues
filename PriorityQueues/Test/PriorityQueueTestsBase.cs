@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PriorityQueues;
 using System;
+using System.Linq;
 
 namespace Test
 {
@@ -112,6 +113,48 @@ namespace Test
             Assert.AreEqual(entry1, heap.RemoveMinimum());
             Assert.AreEqual(entry3, heap.Minimum);
             Assert.AreEqual(2, heap.Count);
+        }
+
+        [TestMethod]
+        public void EnumerableItemsWithoutRemoveTest()
+        {
+            var heap = Create();
+            var entry1 = heap.Insert("a", 1);
+            var entry2 = heap.Insert("b", 3);
+            var entry3 = heap.Insert("c", 4);
+            var entry4 = heap.Insert("d", 2);
+            heap.Increase(entry4, 0);
+            heap.Increase(entry3, 2);
+
+            // Act
+            var items = heap.Select(t => t).ToList();
+
+            // Assert
+            Assert.AreEqual(4, items.Count);
+            Assert.IsTrue(items.Contains(entry1.Item));
+            Assert.IsTrue(items.Contains(entry2.Item));
+            Assert.IsTrue(items.Contains(entry3.Item));
+            Assert.IsTrue(items.Contains(entry4.Item));
+        }
+
+        [TestMethod]
+        public void EnumerableItemsWithRemoveTest()
+        {
+            var heap = Create();
+            var entry1 = heap.Insert("a", 1);
+            var entry2 = heap.Insert("b", 3);
+            var entry3 = heap.Insert("c", 4);
+            var entry4 = heap.Insert("d", 2);
+            heap.RemoveMinimum();
+            heap.Remove(entry2);
+
+            // Act
+            var items = heap.Select(t => t).ToList();
+
+            // Assert
+            Assert.AreEqual(2, items.Count);
+            Assert.IsTrue(items.Contains(entry3.Item));
+            Assert.IsTrue(items.Contains(entry4.Item));
         }
     }
 }

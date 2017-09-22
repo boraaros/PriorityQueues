@@ -52,6 +52,19 @@ namespace PriorityQueues
             heap = new BinaryHeapNode[InitialSize];
         }
 
+        public IEnumerator<TItem> GetEnumerator()
+        {
+            for (int i = 1; i <= Count; i++)
+            {
+                yield return heap[i].Item;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
         public IHeapEntry<TItem, TPriority> Insert(TItem item, TPriority priority)
         {
             if (item == null)

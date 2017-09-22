@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PriorityQueues
 {
@@ -10,7 +11,7 @@ namespace PriorityQueues
     //Increase    ||  O(log n)    |   O(1)        |
     //Remove      ||  O(log n)    |   O(log n)    |
 
-    public interface IPriorityQueue<TItem, TPriority>
+    public interface IPriorityQueue<TItem, TPriority> : IEnumerable<TItem>
     {
         IHeapEntry<TItem, TPriority> Minimum { get; }
         int Count { get; }
