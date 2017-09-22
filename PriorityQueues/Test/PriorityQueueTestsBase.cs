@@ -110,8 +110,8 @@ namespace Test
             var entry2 = heap.Enqueue("4", 4);
             var entry3 = heap.Enqueue("6", 6);
             heap.Increase(entry3, 3);
-            Assert.AreEqual(entry1, heap.Dequeue());
-            Assert.AreEqual(entry3, heap.Peek);
+            Assert.AreEqual(entry1.Item, heap.Dequeue());
+            Assert.AreEqual(entry3.Item, heap.Peek);
             Assert.AreEqual(2, heap.Count);
         }
 
