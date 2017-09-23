@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace PriorityQueues
@@ -15,13 +16,17 @@ namespace PriorityQueues
             public bool IsMarked = false;
             public TItem Item { get; internal set; }
             public TPriority Priority { get; internal set; }
+            public Guid HeapIdentifier { get; set; }
 
-            public FibonacciNode(TItem item, TPriority priority)
+            public FibonacciNode(TItem item, TPriority priority, Guid heapIdentifier)
             {
                 Item = item;
                 Priority = priority;
+                HeapIdentifier = heapIdentifier;
             }
         }
+
+        private readonly Guid identifier;
 
         private IComparer<TPriority> comparer;
 
@@ -55,20 +60,10 @@ namespace PriorityQueues
 
         public IEnumerator<TItem> GetEnumerator()
         {
-            if (minimum == null)
+            foreach (var entry in Enumerate())
             {
-                yield break;
+                yield return entry.Item;
             }
-            var current = minimum;
-            do
-            {
-                foreach (var node in EnumerateBranch(current))
-                {
-                    yield return node;
-                }
-                current = current.Right;
-            }
-            while (current != minimum);
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -86,7 +81,7 @@ namespace PriorityQueues
             {
                 throw new ArgumentNullException("priority");
             }
-            FibonacciNode node = new FibonacciNode(item, priority);
+            FibonacciNode node = new FibonacciNode(item, priority, identifier);
 
             if (Count == 0)
             {
@@ -148,7 +143,7 @@ namespace PriorityQueues
             {
                 minimum = null;
                 Count--;
-                min.Left = min.Right = null;
+                min.HeapIdentifier = Guid.Empty;
                 return min.Item;
             }
             while (minimum.Degree > 0)
@@ -160,7 +155,7 @@ namespace PriorityQueues
             minimum.Right.Left = minimum.Left;
             minimum = SearchNewMinimum();
             Count--;
-            min.Left = min.Right = null;
+            min.HeapIdentifier = Guid.Empty;
             return min.Item;
         }
 
@@ -177,7 +172,7 @@ namespace PriorityQueues
                 throw new InvalidCastException("Invalid heap entry format!");
             }
 
-            if (temp.Left == null)
+            if (temp.HeapIdentifier != identifier)
             {
                 throw new ArgumentException("Heap does not contain this node!");
             }
@@ -186,7 +181,25 @@ namespace PriorityQueues
             Dequeue();
         }
 
-        private IEnumerable<TItem> EnumerateBranch(FibonacciNode root)
+        private IEnumerable<FibonacciNode> Enumerate()
+        {
+            if (minimum == null)
+            {
+                yield break;
+            }
+            var current = minimum;
+            do
+            {
+                foreach (var node in EnumerateBranch(current))
+                {
+                    yield return node;
+                }
+                current = current.Right;
+            }
+            while (current != minimum);
+        }
+
+        private IEnumerable<FibonacciNode> EnumerateBranch(FibonacciNode root)
         {
             if (root.FirstChild != null)
             {
@@ -201,7 +214,7 @@ namespace PriorityQueues
                 }
                 while (current != root.FirstChild);
             }
-            yield return root.Item;
+            yield return root;
         }
 
         private FibonacciNode SearchNewMinimum()
@@ -311,6 +324,17 @@ namespace PriorityQueues
                 node.Parent.IsMarked = true;
             }
             node.Parent = null;
+        }
+
+
+        public void Clear()
+        {
+            foreach (var entry in Enumerate())
+            {
+                entry.HeapIdentifier = Guid.Empty;
+            }
+            Count = 0;
+            minimum = null;
         }
     }
 }

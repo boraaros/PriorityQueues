@@ -165,5 +165,30 @@ namespace Test
             pq.Enqueue("", new object());
             pq.Enqueue("", new object());
         }
+
+        [TestMethod]
+        public void ClearZeroCountTest()
+        {
+            var heap = Create();
+            var entry1 = heap.Enqueue("a", 1);
+
+            // Act
+            heap.Clear();
+
+            // Assert
+            Assert.AreEqual(0, heap.Count);
+        }
+
+        [ExpectedException(typeof(InvalidOperationException))]
+        [TestMethod]
+        public void ClearNotValidRemoveTest()
+        {
+            var heap = Create();
+            var entry1 = heap.Enqueue("a", 1);
+
+            // Act
+            heap.Clear();
+            var next = heap.Peek;
+        }
     }
 }

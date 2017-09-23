@@ -9,16 +9,19 @@ namespace PriorityQueues
         {
             public TItem Item { get; private set; }
             public TPriority Priority { get; internal set; }
-            internal int Index { get; set; }
+            public int Index { get; set; }
+            public Guid HeapIdentifier { get; set; }
 
-            internal BinaryHeapNode(TItem item, TPriority priority, int index)
+            public BinaryHeapNode(TItem item, TPriority priority, int index, Guid heapIdentifier)
             {
                 Item = item;
                 Priority = priority;
                 Index = index;
+                HeapIdentifier = heapIdentifier;
             }
         }
 
+        private readonly Guid identifier;
         private const int InitialSize = 16;
         private const int Degree = 2;
         private IComparer<TPriority> comparer;
@@ -49,6 +52,7 @@ namespace PriorityQueues
             {
                 this.comparer = Comparer<TPriority>.Default;
             }
+            identifier = Guid.NewGuid();
             heap = new BinaryHeapNode[InitialSize];
         }
 
@@ -79,7 +83,7 @@ namespace PriorityQueues
             {
                 Array.Resize(ref heap, heap.Length * Degree);
             }
-            BinaryHeapNode node = new BinaryHeapNode(item, priority, ++Count);
+            BinaryHeapNode node = new BinaryHeapNode(item, priority, ++Count, identifier);
             heap[Count] = node;
             HeapifyUp(node);
             return node;
@@ -130,20 +134,30 @@ namespace PriorityQueues
             {
                 throw new InvalidCastException("Invalid heap entry format!");
             }
-            if (temp.Index == 0)
+            if (temp.HeapIdentifier != identifier)
             {
                 throw new ArgumentException("Heap does not contain this node!");
             }
             if (temp.Index == Count)
             {
-                temp.Index = 0;
+                temp.HeapIdentifier = Guid.Empty;
                 heap[Count--] = null;
                 return;
             }
             MoveNode(heap[Count], temp.Index);
             heap[Count--] = null;
             HeapifyUp(heap[HeapifyDown(heap[temp.Index])]);
-            temp.Index = 0;
+            temp.HeapIdentifier = Guid.Empty;
+        }
+
+        public void Clear()
+        {
+            for (int i = 1; i <= Count; i++)
+            {
+                heap[i].HeapIdentifier = Guid.Empty;
+            }
+            heap = new BinaryHeapNode[InitialSize];
+            Count = 0;
         }
 
         private void HeapifyUp(BinaryHeapNode node)

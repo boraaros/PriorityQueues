@@ -14,10 +14,12 @@ namespace PriorityQueues
     public interface IPriorityQueue<TItem, TPriority> : IEnumerable<TItem>
     {
         int Count { get; }
-        TItem Peek { get; }     
+        TItem Peek { get; }
+        //TPriority PeekPriority { get; }
         IHeapEntry<TItem> Enqueue(TItem item, TPriority priority);
         TItem Dequeue();
         void Increase(IHeapEntry<TItem> entry, TPriority priority);
         void Remove(IHeapEntry<TItem> entry);
+        void Clear();
     }
 }
