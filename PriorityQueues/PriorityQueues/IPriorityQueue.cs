@@ -18,7 +18,7 @@ namespace PriorityQueues
         TPriority PeekPriority { get; }
         IHeapEntry<TItem> Enqueue(TItem item, TPriority priority);
         TItem Dequeue();
-        void Increase(IHeapEntry<TItem> entry, TPriority priority);
+        void Update(IHeapEntry<TItem> entry, TPriority priority);
         void Remove(IHeapEntry<TItem> entry);
         void Clear();
     }

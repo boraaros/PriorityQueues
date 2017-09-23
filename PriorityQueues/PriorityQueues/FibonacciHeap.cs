@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace PriorityQueues
@@ -113,7 +112,7 @@ namespace PriorityQueues
             return node;
         }
 
-        public void Increase(IHeapEntry<TItem> entry, TPriority priority)
+        public void Update(IHeapEntry<TItem> entry, TPriority priority)
         {
             if (entry == null)
             {
@@ -127,10 +126,6 @@ namespace PriorityQueues
             if (node == null)
             {
                 throw new InvalidCastException("Invalid heap entry format!");
-            }
-            if (comparer.Compare(priority, node.Priority) > 0)
-            {
-                throw new ArgumentException("Invalid new priority!");
             }
             if (node.Parent != null && comparer.Compare(node.Parent.Priority, priority) > 0)
             {

@@ -112,7 +112,7 @@ namespace PriorityQueues
             return min.Item;
         }
 
-        public void Increase(IHeapEntry<TItem> entry, TPriority priority)
+        public void Update(IHeapEntry<TItem> entry, TPriority priority)
         {
             if (entry == null)
             {
@@ -126,10 +126,6 @@ namespace PriorityQueues
             if (node == null)
             {
                 throw new InvalidCastException("Invalid heap entry format!");
-            }
-            if (comparer.Compare(priority, node.Priority) > 0)
-            {
-                throw new ArgumentException(string.Format("Invalid new priority: {0} (old value: {1})!", priority, node.Priority));
             }
             node.Priority = priority;
             HeapifyUp(node);

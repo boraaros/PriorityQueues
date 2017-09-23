@@ -65,7 +65,7 @@ namespace Test
         {
             var heap = Create();
             var entry = heap.Enqueue("Item", 0);
-            heap.Increase(entry, -1);
+            heap.Update(entry, -1);
         }
 
         [ExpectedException(typeof(ArgumentNullException))]
@@ -74,16 +74,7 @@ namespace Test
         {
             var heap = Create();
             var entry = heap.Enqueue("Item", 0);
-            heap.Increase(null, -1);
-        }
-
-        [ExpectedException(typeof(ArgumentException))]
-        [TestMethod]
-        public void HeapIncreaseInvalidNewpriorityTest()
-        {
-            var heap = Create();
-            var entry = heap.Enqueue("Item", 0);
-            heap.Increase(entry, 1);
+            heap.Update(null, -1);
         }
 
         [TestMethod]
@@ -109,7 +100,7 @@ namespace Test
             var entry1 = heap.Enqueue("2", 2);
             var entry2 = heap.Enqueue("4", 4);
             var entry3 = heap.Enqueue("6", 6);
-            heap.Increase(entry3, 3);
+            heap.Update(entry3, 3);
             Assert.AreEqual(entry1.Item, heap.Dequeue());
             Assert.AreEqual(entry3.Item, heap.Peek);
             Assert.AreEqual(2, heap.Count);
@@ -123,8 +114,8 @@ namespace Test
             var entry2 = heap.Enqueue("b", 3);
             var entry3 = heap.Enqueue("c", 4);
             var entry4 = heap.Enqueue("d", 2);
-            heap.Increase(entry4, 0);
-            heap.Increase(entry3, 2);
+            heap.Update(entry4, 0);
+            heap.Update(entry3, 2);
 
             // Act
             var items = heap.Select(t => t).ToList();
@@ -189,6 +180,38 @@ namespace Test
             // Act
             heap.Clear();
             var next = heap.Peek;
+        }
+
+        [TestMethod]
+        public void Test()
+        {
+            var heap = Create();
+            var entry1 = heap.Enqueue("a", 1);
+            var entry2 = heap.Enqueue("b", 2);
+            var entry3 = heap.Enqueue("c", 3);
+            var entry4 = heap.Enqueue("d", 4);
+            heap.Update(entry1, 5);
+            heap.Update(entry2, 5);
+            heap.Update(entry1, 7);
+            heap.Update(entry2, 1);
+            heap.Update(entry4, 4);
+            heap.Update(entry3, 6);
+            heap.Update(entry1, 10);
+
+            // Act
+            Assert.AreEqual(1, heap.PeekPriority);
+            Assert.AreEqual("b", heap.Dequeue());
+
+            Assert.AreEqual(4, heap.PeekPriority);
+            Assert.AreEqual("d", heap.Dequeue());
+
+            Assert.AreEqual(6, heap.PeekPriority);
+            Assert.AreEqual("c", heap.Dequeue());
+
+            Assert.AreEqual(10, heap.PeekPriority);
+            Assert.AreEqual("a", heap.Dequeue());
+
+            Assert.AreEqual(0, heap.Count);
         }
     }
 }
