@@ -44,6 +44,18 @@ namespace PriorityQueues
             }
         }
 
+        public TPriority PeekPriority
+        {
+            get
+            {
+                if (Count == 0)
+                {
+                    throw new InvalidOperationException("Binary heap does not contain elements");
+                }
+                return minimum.Priority;
+            }
+        }
+
         public int Count { get; private set; }
 
         public FibonacciHeap(IComparer<TPriority> comparer = null)
@@ -56,6 +68,7 @@ namespace PriorityQueues
             {
                 this.comparer = Comparer<TPriority>.Default;
             }
+            identifier = Guid.NewGuid();
         }
 
         public IEnumerator<TItem> GetEnumerator()
@@ -179,6 +192,16 @@ namespace PriorityQueues
             CutNode(temp);
             minimum = temp;
             Dequeue();
+        }
+
+        public void Clear()
+        {
+            foreach (var entry in Enumerate())
+            {
+                entry.HeapIdentifier = Guid.Empty;
+            }
+            Count = 0;
+            minimum = null;
         }
 
         private IEnumerable<FibonacciNode> Enumerate()
@@ -324,17 +347,6 @@ namespace PriorityQueues
                 node.Parent.IsMarked = true;
             }
             node.Parent = null;
-        }
-
-
-        public void Clear()
-        {
-            foreach (var entry in Enumerate())
-            {
-                entry.HeapIdentifier = Guid.Empty;
-            }
-            Count = 0;
-            minimum = null;
         }
     }
 }

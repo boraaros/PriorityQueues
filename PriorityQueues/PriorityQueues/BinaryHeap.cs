@@ -40,6 +40,18 @@ namespace PriorityQueues
             }
         }
 
+        public TPriority PeekPriority
+        {
+            get 
+            {
+                if (Count == 0)
+                {
+                    throw new InvalidOperationException("Binary heap does not contain elements");
+                }
+                return heap[1].Priority;
+            }
+        }
+
         public int Count { get; private set; }
 
         public BinaryHeap(IComparer<TPriority> comparer = null)
