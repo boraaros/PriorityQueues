@@ -7,9 +7,9 @@ namespace Test
     [TestClass]
     public class FibonacciHeapTests : PriorityQueueTestsBase
     {
-        protected override IPriorityQueue<string, int> Create()
+        protected override IPriorityQueue<string, TPriority> Create<TPriority>()
         {
-            return new FibonacciHeap<string, int>();
+            return new FibonacciHeap<string, TPriority>();
         }
     }
 }

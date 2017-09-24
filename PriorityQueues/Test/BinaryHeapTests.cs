@@ -7,9 +7,9 @@ namespace Test
     [TestClass]
     public class BinaryHeapTests : PriorityQueueTestsBase
     {
-        protected override IPriorityQueue<string, int> Create()
+        protected override IPriorityQueue<string, TPriority> Create<TPriority>()
         {
-            return new BinaryHeap<string, int>();
+            return new BinaryHeap<string, TPriority>();
         }
     }
 }

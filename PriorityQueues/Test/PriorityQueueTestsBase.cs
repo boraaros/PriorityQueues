@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PriorityQueues;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Test
@@ -8,210 +9,285 @@ namespace Test
     [TestClass]
     public abstract class PriorityQueueTestsBase
     {
-        protected abstract IPriorityQueue<string, int> Create();
+        protected abstract IPriorityQueue<string, TPriority> Create<TPriority>();
 
         [TestMethod]
-        public void EmptyHeapCountTest()
+        public void Empty_priority_queue_count_is_zero()
         {
-            var heap = Create();
-            Assert.AreEqual(0, heap.Count);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            Assert.AreEqual(0, priorityQueue.Count);
         }
 
         [ExpectedException(typeof(InvalidOperationException))]
         [TestMethod]
-        public void EmptyHeapMinimumTest()
+        public void Empty_priority_queue_peek_throws_exception()
         {
-            var heap = Create();
-            var minimum = heap.Peek;
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            string item = priorityQueue.Peek;
         }
 
         [ExpectedException(typeof(InvalidOperationException))]
         [TestMethod]
-        public void EmptyHeapRemoveMinimumTest()
+        public void Empty_priority_queue_peek_priority_throws_exception()
         {
-            var heap = Create();
-            heap.Dequeue();
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            int priority = priorityQueue.PeekPriority;
+        }
+
+        [ExpectedException(typeof(InvalidOperationException))]
+        [TestMethod]
+        public void Empty_priority_queue_dequeue_throws_exception()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            priorityQueue.Dequeue();
         }
 
         [ExpectedException(typeof(ArgumentNullException))]
         [TestMethod]
-        public void HeapRemoveNullTest()
+        public void Remove_from_priority_queue_throws_exception_if_parameter_is_null()
         {
-            var heap = Create();
-            heap.Remove(null);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            priorityQueue.Remove(null);
         }
 
         [TestMethod]
-        public void HeapRemoveTest()
+        public void Remove_single_item_from_priority_queue()
         {
-            var heap = Create();
-            var entry = heap.Enqueue("Item", 0);
-            heap.Remove(entry);
-            Assert.AreEqual(0, heap.Count);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 0);
+            priorityQueue.Remove(entry);
+            Assert.AreEqual(0, priorityQueue.Count);
         }
 
         [ExpectedException(typeof(ArgumentException))]
         [TestMethod]
-        public void HeapRemoveNotContainedTest()
+        public void Remove_item_from_priority_queue_if_already_removed()
         {
-            var heap = Create();
-            var entry = heap.Enqueue("Item", 0);
-            heap.Remove(entry);
-            heap.Remove(entry);
-        }
-
-        [TestMethod]
-        public void HeapIncreaseTest()
-        {
-            var heap = Create();
-            var entry = heap.Enqueue("Item", 0);
-            heap.Update(entry, -1);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 0);
+            priorityQueue.Remove(entry);
+            priorityQueue.Remove(entry);
         }
 
         [ExpectedException(typeof(ArgumentNullException))]
         [TestMethod]
-        public void HeapIncreaseNullEntryTest()
+        public void Enqueue_throws_exception_if_parameter_is_null()
         {
-            var heap = Create();
-            var entry = heap.Enqueue("Item", 0);
-            heap.Update(null, -1);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            priorityQueue.Enqueue(null, 1);
         }
 
         [TestMethod]
-        public void HeapInsertTest()
+        public void Enqueue_single_item_and_peek()
         {
-            var heap = Create();
-            var entry = heap.Enqueue("Item", 0);
-            Assert.AreEqual(1, heap.Count);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            priorityQueue.Enqueue("Test", 1);
+            Assert.AreEqual(1, priorityQueue.Count);
+            Assert.AreEqual("Test", priorityQueue.Peek);
+            Assert.AreEqual(1, priorityQueue.PeekPriority);
+        }
+
+        [TestMethod]
+        public void Enqueue_single_item_with_negative_priority()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            priorityQueue.Enqueue("Test", -1);
+            Assert.AreEqual(-1, priorityQueue.PeekPriority);
+        }
+
+        [TestMethod]
+        public void Enqueue_item_several_times_with_different_priority()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            string item = "Test";
+            priorityQueue.Enqueue(item, 0);
+            priorityQueue.Enqueue(item, 1);
+            Assert.AreEqual(2, priorityQueue.Count);
+        }
+
+        [TestMethod]
+        public void Enqueue_different_items_with_same_priority()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            priorityQueue.Enqueue("Test1", 1);
+            priorityQueue.Enqueue("Test2", 1);
+            Assert.AreEqual(2, priorityQueue.Count);
+        }
+
+        [TestMethod]
+        public void Increase_priority_of_single_item()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 2);
+            priorityQueue.Update(entry, 1);
+            Assert.AreEqual(1, priorityQueue.PeekPriority);
+        }
+
+        [TestMethod]
+        public void Decrease_priority_of_single_item()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            priorityQueue.Update(entry, 2);
+            Assert.AreEqual(2, priorityQueue.PeekPriority);
+        }
+
+        [TestMethod]
+        public void Update_but_new_priority_equals_old_priority()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            priorityQueue.Update(entry, 1);
+            Assert.AreEqual(1, priorityQueue.PeekPriority);
+        }
+
+        [TestMethod]
+        public void Update_priority_if_head_item_changed()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry1 = priorityQueue.Enqueue("Test1", 1);
+            IHeapEntry<string> entry2 = priorityQueue.Enqueue("Test2", 2);
+            priorityQueue.Update(entry2, 0);
+            Assert.AreEqual("Test2", priorityQueue.Peek);
+            Assert.AreEqual(0, priorityQueue.PeekPriority);
         }
 
         [ExpectedException(typeof(ArgumentNullException))]
         [TestMethod]
-        public void HeapInsertNullTest()
+        public void Update_throws_exception_if_parameter_is_null()
         {
-            var heap = Create();
-            var entry = heap.Enqueue(null, 0);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry = priorityQueue.Enqueue("Item", 1);
+            priorityQueue.Update(null, 0);
         }
 
         [TestMethod]
-        public void HeapMultiOperationTest()
+        public void Enumerate_items_if_priority_queue_is_empty()
         {
-            var heap = Create();
-            var entry1 = heap.Enqueue("2", 2);
-            var entry2 = heap.Enqueue("4", 4);
-            var entry3 = heap.Enqueue("6", 6);
-            heap.Update(entry3, 3);
-            Assert.AreEqual(entry1.Item, heap.Dequeue());
-            Assert.AreEqual(entry3.Item, heap.Peek);
-            Assert.AreEqual(2, heap.Count);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IList<string> items = priorityQueue.Select(t => t).ToList();
+            Assert.AreEqual(0, items.Count);
         }
 
         [TestMethod]
-        public void EnumerableItemsWithoutRemoveTest()
+        public void Enumerate_items_if_only_enqueue_called()
         {
-            var heap = Create();
-            var entry1 = heap.Enqueue("a", 1);
-            var entry2 = heap.Enqueue("b", 3);
-            var entry3 = heap.Enqueue("c", 4);
-            var entry4 = heap.Enqueue("d", 2);
-            heap.Update(entry4, 0);
-            heap.Update(entry3, 2);
-
-            // Act
-            var items = heap.Select(t => t).ToList();
-
-            // Assert
-            Assert.AreEqual(4, items.Count);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry1 = priorityQueue.Enqueue("Test1", 1);
+            IHeapEntry<string> entry2 = priorityQueue.Enqueue("Test2", 2);
+            IList<string> items = priorityQueue.Select(t => t).ToList();
+            Assert.AreEqual(2, items.Count);
             Assert.IsTrue(items.Contains(entry1.Item));
             Assert.IsTrue(items.Contains(entry2.Item));
-            Assert.IsTrue(items.Contains(entry3.Item));
-            Assert.IsTrue(items.Contains(entry4.Item));
-        }
-
-        [TestMethod]
-        public void EnumerableItemsWithRemoveTest()
-        {
-            var heap = Create();
-            var entry1 = heap.Enqueue("a", 1);
-            var entry2 = heap.Enqueue("b", 3);
-            var entry3 = heap.Enqueue("c", 4);
-            var entry4 = heap.Enqueue("d", 2);
-            heap.Dequeue();
-            heap.Remove(entry2);
-
-            // Act
-            var items = heap.Select(t => t).ToList();
-
-            // Assert
-            Assert.AreEqual(2, items.Count);
-            Assert.IsTrue(items.Contains(entry3.Item));
-            Assert.IsTrue(items.Contains(entry4.Item));
         }
 
         [ExpectedException(typeof(ArgumentException))]
         [TestMethod]
-        public void NoComparableTest()
+        public void Enqueue_two_item_with_non_comparable_priority()
         {
-            var pq = new BinaryHeap<string, object>();
-            pq.Enqueue("", new object());
-            pq.Enqueue("", new object());
+            IPriorityQueue<string, object> priorityQueue = Create<object>();
+            priorityQueue.Enqueue("Test1", new object());
+            priorityQueue.Enqueue("Test2", new object());
         }
 
         [TestMethod]
-        public void ClearZeroCountTest()
+        public void Clear_if_priority_queue_is_already_empty()
         {
-            var heap = Create();
-            var entry1 = heap.Enqueue("a", 1);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            priorityQueue.Clear();
+            Assert.AreEqual(0, priorityQueue.Count);
+        }
 
-            // Act
-            heap.Clear();
+        [TestMethod]
+        public void Clear_priority_queue_count_is_zero()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            priorityQueue.Clear();
+            Assert.AreEqual(0, priorityQueue.Count);
+        }
 
-            // Assert
-            Assert.AreEqual(0, heap.Count);
+        [ExpectedException(typeof(ArgumentException))]
+        [TestMethod]
+        public void Update_throws_exception_after_clear()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            priorityQueue.Clear();
+            priorityQueue.Update(entry, 2);
         }
 
         [ExpectedException(typeof(InvalidOperationException))]
         [TestMethod]
-        public void ClearNotValidRemoveTest()
+        public void Peek_throws_exception_after_clear()
         {
-            var heap = Create();
-            var entry1 = heap.Enqueue("a", 1);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            priorityQueue.Clear();
+            string item = priorityQueue.Peek;
+        }
 
-            // Act
-            heap.Clear();
-            var next = heap.Peek;
+        [ExpectedException(typeof(InvalidOperationException))]
+        [TestMethod]
+        public void Peek_priority_throws_exception_after_clear()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            priorityQueue.Clear();
+            int priority = priorityQueue.PeekPriority;
+        }
+
+        [ExpectedException(typeof(ArgumentException))]
+        [TestMethod]
+        public void Update_throws_exception_if_parameter_comes_from_another_queue()
+        {
+            IPriorityQueue<string, int> priorityQueue1 = Create<int>();
+            IPriorityQueue<string, int> priorityQueue2 = Create<int>();
+            IHeapEntry<string> entry1 = priorityQueue1.Enqueue("Test", 1);
+            IHeapEntry<string> entry2 = priorityQueue2.Enqueue("Test", 1);
+            priorityQueue1.Update(entry2, 0);
+        }
+
+        [ExpectedException(typeof(ArgumentException))]
+        [TestMethod]
+        public void Remove_throws_exception_if_parameter_comes_from_another_queue()
+        {
+            IPriorityQueue<string, int> priorityQueue1 = Create<int>();
+            IPriorityQueue<string, int> priorityQueue2 = Create<int>();
+            IHeapEntry<string> entry1 = priorityQueue1.Enqueue("Test", 1);
+            IHeapEntry<string> entry2 = priorityQueue2.Enqueue("Test", 1);
+            priorityQueue1.Remove(entry2);
         }
 
         [TestMethod]
-        public void Test()
+        public void Complex_priority_queue_test_with_multiple_operation()
         {
-            var heap = Create();
-            var entry1 = heap.Enqueue("a", 1);
-            var entry2 = heap.Enqueue("b", 2);
-            var entry3 = heap.Enqueue("c", 3);
-            var entry4 = heap.Enqueue("d", 4);
-            heap.Update(entry1, 5);
-            heap.Update(entry2, 5);
-            heap.Update(entry1, 7);
-            heap.Update(entry2, 1);
-            heap.Update(entry4, 4);
-            heap.Update(entry3, 6);
-            heap.Update(entry1, 10);
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            IHeapEntry<string> entry1 = priorityQueue.Enqueue("a", 1);
+            IHeapEntry<string> entry2 = priorityQueue.Enqueue("b", 2);
+            IHeapEntry<string> entry3 = priorityQueue.Enqueue("c", 3);
+            IHeapEntry<string> entry4 = priorityQueue.Enqueue("d", 4);
+            priorityQueue.Update(entry1, 5);
+            priorityQueue.Update(entry2, 5);
+            priorityQueue.Update(entry1, 7);
+            priorityQueue.Update(entry2, 1);
+            priorityQueue.Update(entry4, 4);
+            priorityQueue.Update(entry3, 6);
+            priorityQueue.Update(entry1, 10);
 
-            // Act
-            Assert.AreEqual(1, heap.PeekPriority);
-            Assert.AreEqual("b", heap.Dequeue());
+            Assert.AreEqual(1, priorityQueue.PeekPriority);
+            Assert.AreEqual("b", priorityQueue.Dequeue());
 
-            Assert.AreEqual(4, heap.PeekPriority);
-            Assert.AreEqual("d", heap.Dequeue());
+            Assert.AreEqual(4, priorityQueue.PeekPriority);
+            Assert.AreEqual("d", priorityQueue.Dequeue());
 
-            Assert.AreEqual(6, heap.PeekPriority);
-            Assert.AreEqual("c", heap.Dequeue());
+            Assert.AreEqual(6, priorityQueue.PeekPriority);
+            Assert.AreEqual("c", priorityQueue.Dequeue());
 
-            Assert.AreEqual(10, heap.PeekPriority);
-            Assert.AreEqual("a", heap.Dequeue());
+            Assert.AreEqual(10, priorityQueue.PeekPriority);
+            Assert.AreEqual("a", priorityQueue.Dequeue());
 
-            Assert.AreEqual(0, heap.Count);
+            Assert.AreEqual(0, priorityQueue.Count);
         }
     }
 }

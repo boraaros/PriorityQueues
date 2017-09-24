@@ -127,6 +127,10 @@ namespace PriorityQueues
             {
                 throw new InvalidCastException("Invalid heap entry format!");
             }
+            if (node.HeapIdentifier != identifier)
+            {
+                throw new ArgumentException("Heap does not contain this node!");
+            }
             if (node.Parent != null && comparer.Compare(node.Parent.Priority, priority) > 0)
             {
                 CutNode(node);
