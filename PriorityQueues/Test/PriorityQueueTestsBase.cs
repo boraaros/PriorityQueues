@@ -71,10 +71,18 @@ namespace Test
 
         [ExpectedException(typeof(ArgumentNullException))]
         [TestMethod]
-        public void Enqueue_throws_exception_if_parameter_is_null()
+        public void Enqueue_throws_exception_if_item_is_null()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
             priorityQueue.Enqueue(null, 1);
+        }
+
+        [ExpectedException(typeof(ArgumentNullException))]
+        [TestMethod]
+        public void Enqueue_throws_exception_if_priority_is_null()
+        {
+            IPriorityQueue<string, string> priorityQueue = Create<string>();
+            priorityQueue.Enqueue("Test", null);
         }
 
         [TestMethod]
@@ -112,6 +120,16 @@ namespace Test
             priorityQueue.Enqueue("Test1", 1);
             priorityQueue.Enqueue("Test2", 1);
             Assert.AreEqual(2, priorityQueue.Count);
+        }
+
+        [TestMethod]
+        public void Enqueue_if_head_item_changed()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            priorityQueue.Enqueue("Test1", 1);
+            priorityQueue.Enqueue("Test2", 0);
+            Assert.AreEqual("Test2", priorityQueue.Peek);
+            Assert.AreEqual(0, priorityQueue.PeekPriority);
         }
 
         [TestMethod]
@@ -154,11 +172,20 @@ namespace Test
 
         [ExpectedException(typeof(ArgumentNullException))]
         [TestMethod]
-        public void Update_throws_exception_if_parameter_is_null()
+        public void Update_throws_exception_if_entry_is_null()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
             IHeapEntry<string> entry = priorityQueue.Enqueue("Item", 1);
             priorityQueue.Update(null, 0);
+        }
+
+        [ExpectedException(typeof(ArgumentNullException))]
+        [TestMethod]
+        public void Update_throws_exception_if_priority_is_null()
+        {
+            IPriorityQueue<string, string> priorityQueue = Create<string>();
+            IHeapEntry<string> entry = priorityQueue.Enqueue("Item", "1");
+            priorityQueue.Update(entry, null);
         }
 
         [TestMethod]
