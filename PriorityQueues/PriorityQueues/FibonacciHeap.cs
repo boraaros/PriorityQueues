@@ -112,7 +112,7 @@ namespace PriorityQueues
             return node;
         }
 
-        public void Update(IHeapEntry<TItem> entry, TPriority priority)
+        public void UpdatePriority(IHeapEntry<TItem> entry, TPriority priority)
         {
             if (entry == null)
             {
