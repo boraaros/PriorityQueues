@@ -192,8 +192,7 @@ namespace Test
         public void Enumerate_items_if_priority_queue_is_empty()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IList<string> items = priorityQueue.Select(t => t).ToList();
-            Assert.AreEqual(0, items.Count);
+            Assert.IsFalse(priorityQueue.Any());
         }
 
         [TestMethod]
@@ -284,6 +283,26 @@ namespace Test
             IHeapEntry<string> entry1 = priorityQueue1.Enqueue("Test", 1);
             IHeapEntry<string> entry2 = priorityQueue2.Enqueue("Test", 1);
             priorityQueue1.Remove(entry2);
+        }
+
+        [ExpectedException(typeof(InvalidCastException))]
+        [TestMethod]
+        public void Update_throws_exception_if_entry_is_invalid_type()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            priorityQueue.Enqueue("Test", 1);
+            IHeapEntry<string> entry = new TestHeapEntry("Test");
+            priorityQueue.Update(entry, 0);
+        }
+
+        [ExpectedException(typeof(InvalidCastException))]
+        [TestMethod]
+        public void Remove_throws_exception_if_entry_is_invalid_type()
+        {
+            IPriorityQueue<string, int> priorityQueue = Create<int>();
+            priorityQueue.Enqueue("Test", 1);
+            IHeapEntry<string> entry = new TestHeapEntry("Test");
+            priorityQueue.Remove(entry);
         }
 
         [TestMethod]

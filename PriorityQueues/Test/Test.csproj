@@ -54,6 +54,7 @@
     <Compile Include="FibonacciHeapTests.cs" />
     <Compile Include="PriorityQueueTestsBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestHeapEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PriorityQueues\PriorityQueues.csproj">
