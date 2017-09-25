@@ -3,11 +3,11 @@ using System;
 
 namespace Test
 {
-    class TestHeapEntry : IPriorityQueueEntry<string>
+    class TestPriorityQueueEntry : IPriorityQueueEntry<string>
     {
         private readonly string item;
 
-        public TestHeapEntry(string item)
+        public TestPriorityQueueEntry(string item)
         {
             this.item = item;
         }

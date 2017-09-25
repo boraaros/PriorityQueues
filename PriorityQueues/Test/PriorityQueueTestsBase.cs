@@ -291,7 +291,7 @@ namespace Test
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
             priorityQueue.Enqueue("Test", 1);
-            IPriorityQueueEntry<string> entry = new TestHeapEntry("Test");
+            IPriorityQueueEntry<string> entry = new TestPriorityQueueEntry("Test");
             priorityQueue.UpdatePriority(entry, 0);
         }
 
@@ -301,7 +301,7 @@ namespace Test
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
             priorityQueue.Enqueue("Test", 1);
-            IPriorityQueueEntry<string> entry = new TestHeapEntry("Test");
+            IPriorityQueueEntry<string> entry = new TestPriorityQueueEntry("Test");
             priorityQueue.Remove(entry);
         }
 
