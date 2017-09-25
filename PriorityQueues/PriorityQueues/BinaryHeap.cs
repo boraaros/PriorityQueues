@@ -5,7 +5,7 @@ namespace PriorityQueues
 {
     public sealed class BinaryHeap<TItem, TPriority> : IPriorityQueue<TItem, TPriority>
     {
-        private sealed class BinaryHeapNode : IHeapEntry<TItem>
+        private sealed class BinaryHeapNode : IPriorityQueueEntry<TItem>
         {
             public TItem Item { get; private set; }
             public TPriority Priority { get; internal set; }
@@ -81,7 +81,7 @@ namespace PriorityQueues
             return this.GetEnumerator();
         }
 
-        public IHeapEntry<TItem> Enqueue(TItem item, TPriority priority)
+        public IPriorityQueueEntry<TItem> Enqueue(TItem item, TPriority priority)
         {
             if (item == null)
             {
@@ -112,7 +112,7 @@ namespace PriorityQueues
             return min.Item;
         }
 
-        public void UpdatePriority(IHeapEntry<TItem> entry, TPriority priority)
+        public void UpdatePriority(IPriorityQueueEntry<TItem> entry, TPriority priority)
         {
             if (entry == null)
             {
@@ -135,7 +135,7 @@ namespace PriorityQueues
             HeapifyUp(node);
         }
 
-        public void Remove(IHeapEntry<TItem> entry)
+        public void Remove(IPriorityQueueEntry<TItem> entry)
         {
             if (entry == null)
             {

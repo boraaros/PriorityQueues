@@ -54,7 +54,7 @@ namespace Test
         public void Remove_single_item_from_priority_queue()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 0);
+            IPriorityQueueEntry<string> entry = priorityQueue.Enqueue("Test", 0);
             priorityQueue.Remove(entry);
             Assert.AreEqual(0, priorityQueue.Count);
         }
@@ -64,7 +64,7 @@ namespace Test
         public void Remove_item_from_priority_queue_if_already_removed()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 0);
+            IPriorityQueueEntry<string> entry = priorityQueue.Enqueue("Test", 0);
             priorityQueue.Remove(entry);
             priorityQueue.Remove(entry);
         }
@@ -136,7 +136,7 @@ namespace Test
         public void Increase_priority_of_single_item()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 2);
+            IPriorityQueueEntry<string> entry = priorityQueue.Enqueue("Test", 2);
             priorityQueue.UpdatePriority(entry, 1);
             Assert.AreEqual(1, priorityQueue.PeekPriority);
         }
@@ -145,7 +145,7 @@ namespace Test
         public void Decrease_priority_of_single_item()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            IPriorityQueueEntry<string> entry = priorityQueue.Enqueue("Test", 1);
             priorityQueue.UpdatePriority(entry, 2);
             Assert.AreEqual(2, priorityQueue.PeekPriority);
         }
@@ -154,7 +154,7 @@ namespace Test
         public void Update_but_new_priority_equals_old_priority()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            IPriorityQueueEntry<string> entry = priorityQueue.Enqueue("Test", 1);
             priorityQueue.UpdatePriority(entry, 1);
             Assert.AreEqual(1, priorityQueue.PeekPriority);
         }
@@ -163,8 +163,8 @@ namespace Test
         public void Update_priority_if_head_item_changed()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry1 = priorityQueue.Enqueue("Test1", 1);
-            IHeapEntry<string> entry2 = priorityQueue.Enqueue("Test2", 2);
+            IPriorityQueueEntry<string> entry1 = priorityQueue.Enqueue("Test1", 1);
+            IPriorityQueueEntry<string> entry2 = priorityQueue.Enqueue("Test2", 2);
             priorityQueue.UpdatePriority(entry2, 0);
             Assert.AreEqual("Test2", priorityQueue.Peek);
             Assert.AreEqual(0, priorityQueue.PeekPriority);
@@ -175,7 +175,7 @@ namespace Test
         public void Update_throws_exception_if_entry_is_null()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry = priorityQueue.Enqueue("Item", 1);
+            IPriorityQueueEntry<string> entry = priorityQueue.Enqueue("Item", 1);
             priorityQueue.UpdatePriority(null, 0);
         }
 
@@ -184,7 +184,7 @@ namespace Test
         public void Update_throws_exception_if_priority_is_null()
         {
             IPriorityQueue<string, string> priorityQueue = Create<string>();
-            IHeapEntry<string> entry = priorityQueue.Enqueue("Item", "1");
+            IPriorityQueueEntry<string> entry = priorityQueue.Enqueue("Item", "1");
             priorityQueue.UpdatePriority(entry, null);
         }
 
@@ -199,8 +199,8 @@ namespace Test
         public void Enumerate_items_if_only_enqueue_called()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry1 = priorityQueue.Enqueue("Test1", 1);
-            IHeapEntry<string> entry2 = priorityQueue.Enqueue("Test2", 2);
+            IPriorityQueueEntry<string> entry1 = priorityQueue.Enqueue("Test1", 1);
+            IPriorityQueueEntry<string> entry2 = priorityQueue.Enqueue("Test2", 2);
             IList<string> items = priorityQueue.Select(t => t).ToList();
             Assert.AreEqual(2, items.Count);
             Assert.IsTrue(items.Contains(entry1.Item));
@@ -228,7 +228,7 @@ namespace Test
         public void Clear_priority_queue_count_is_zero()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            IPriorityQueueEntry<string> entry = priorityQueue.Enqueue("Test", 1);
             priorityQueue.Clear();
             Assert.AreEqual(0, priorityQueue.Count);
         }
@@ -238,7 +238,7 @@ namespace Test
         public void Update_throws_exception_after_clear()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            IPriorityQueueEntry<string> entry = priorityQueue.Enqueue("Test", 1);
             priorityQueue.Clear();
             priorityQueue.UpdatePriority(entry, 2);
         }
@@ -248,7 +248,7 @@ namespace Test
         public void Peek_throws_exception_after_clear()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            IPriorityQueueEntry<string> entry = priorityQueue.Enqueue("Test", 1);
             priorityQueue.Clear();
             string item = priorityQueue.Peek;
         }
@@ -258,7 +258,7 @@ namespace Test
         public void Peek_priority_throws_exception_after_clear()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry = priorityQueue.Enqueue("Test", 1);
+            IPriorityQueueEntry<string> entry = priorityQueue.Enqueue("Test", 1);
             priorityQueue.Clear();
             int priority = priorityQueue.PeekPriority;
         }
@@ -269,8 +269,8 @@ namespace Test
         {
             IPriorityQueue<string, int> priorityQueue1 = Create<int>();
             IPriorityQueue<string, int> priorityQueue2 = Create<int>();
-            IHeapEntry<string> entry1 = priorityQueue1.Enqueue("Test", 1);
-            IHeapEntry<string> entry2 = priorityQueue2.Enqueue("Test", 1);
+            IPriorityQueueEntry<string> entry1 = priorityQueue1.Enqueue("Test", 1);
+            IPriorityQueueEntry<string> entry2 = priorityQueue2.Enqueue("Test", 1);
             priorityQueue1.UpdatePriority(entry2, 0);
         }
 
@@ -280,8 +280,8 @@ namespace Test
         {
             IPriorityQueue<string, int> priorityQueue1 = Create<int>();
             IPriorityQueue<string, int> priorityQueue2 = Create<int>();
-            IHeapEntry<string> entry1 = priorityQueue1.Enqueue("Test", 1);
-            IHeapEntry<string> entry2 = priorityQueue2.Enqueue("Test", 1);
+            IPriorityQueueEntry<string> entry1 = priorityQueue1.Enqueue("Test", 1);
+            IPriorityQueueEntry<string> entry2 = priorityQueue2.Enqueue("Test", 1);
             priorityQueue1.Remove(entry2);
         }
 
@@ -291,7 +291,7 @@ namespace Test
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
             priorityQueue.Enqueue("Test", 1);
-            IHeapEntry<string> entry = new TestHeapEntry("Test");
+            IPriorityQueueEntry<string> entry = new TestHeapEntry("Test");
             priorityQueue.UpdatePriority(entry, 0);
         }
 
@@ -301,7 +301,7 @@ namespace Test
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
             priorityQueue.Enqueue("Test", 1);
-            IHeapEntry<string> entry = new TestHeapEntry("Test");
+            IPriorityQueueEntry<string> entry = new TestHeapEntry("Test");
             priorityQueue.Remove(entry);
         }
 
@@ -309,10 +309,10 @@ namespace Test
         public void Complex_priority_queue_test_with_multiple_operation()
         {
             IPriorityQueue<string, int> priorityQueue = Create<int>();
-            IHeapEntry<string> entry1 = priorityQueue.Enqueue("a", 1);
-            IHeapEntry<string> entry2 = priorityQueue.Enqueue("b", 2);
-            IHeapEntry<string> entry3 = priorityQueue.Enqueue("c", 3);
-            IHeapEntry<string> entry4 = priorityQueue.Enqueue("d", 4);
+            IPriorityQueueEntry<string> entry1 = priorityQueue.Enqueue("a", 1);
+            IPriorityQueueEntry<string> entry2 = priorityQueue.Enqueue("b", 2);
+            IPriorityQueueEntry<string> entry3 = priorityQueue.Enqueue("c", 3);
+            IPriorityQueueEntry<string> entry4 = priorityQueue.Enqueue("d", 4);
             priorityQueue.UpdatePriority(entry1, 5);
             priorityQueue.UpdatePriority(entry2, 5);
             priorityQueue.UpdatePriority(entry1, 7);

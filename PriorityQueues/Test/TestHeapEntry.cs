@@ -3,7 +3,7 @@ using System;
 
 namespace Test
 {
-    class TestHeapEntry : IHeapEntry<string>
+    class TestHeapEntry : IPriorityQueueEntry<string>
     {
         private readonly string item;
 

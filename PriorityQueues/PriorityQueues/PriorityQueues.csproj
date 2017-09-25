@@ -41,7 +41,7 @@
   <ItemGroup>
     <Compile Include="BinaryHeap.cs" />
     <Compile Include="FibonacciHeap.cs" />
-    <Compile Include="IHeapEntry.cs" />
+    <Compile Include="IPriorityQueueEntry.cs" />
     <Compile Include="IPriorityQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

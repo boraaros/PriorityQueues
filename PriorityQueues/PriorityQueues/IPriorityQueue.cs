@@ -16,10 +16,10 @@ namespace PriorityQueues
         int Count { get; }
         TItem Peek { get; }
         TPriority PeekPriority { get; }
-        IHeapEntry<TItem> Enqueue(TItem item, TPriority priority);
+        IPriorityQueueEntry<TItem> Enqueue(TItem item, TPriority priority);
         TItem Dequeue();
-        void UpdatePriority(IHeapEntry<TItem> entry, TPriority priority);
-        void Remove(IHeapEntry<TItem> entry);
+        void UpdatePriority(IPriorityQueueEntry<TItem> entry, TPriority priority);
+        void Remove(IPriorityQueueEntry<TItem> entry);
         void Clear();
     }
 }
