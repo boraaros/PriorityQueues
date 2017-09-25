@@ -43,6 +43,7 @@
     <Compile Include="FibonacciHeap.cs" />
     <Compile Include="IPriorityQueueEntry.cs" />
     <Compile Include="IPriorityQueue.cs" />
+    <Compile Include="PriorityQueueType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

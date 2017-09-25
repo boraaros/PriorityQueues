@@ -7,9 +7,14 @@ namespace Test
     [TestClass]
     public class FibonacciHeapTests : PriorityQueueTestsBase
     {
-        protected override IPriorityQueue<string, TPriority> Create<TPriority>()
+        protected override IPriorityQueue<string, TPriority> CreateMinimumPriorityQueue<TPriority>()
         {
-            return new FibonacciHeap<string, TPriority>();
+            return new FibonacciHeap<string, TPriority>(PriorityQueueType.Minimum);
+        }
+
+        protected override IPriorityQueue<string, TPriority> CreateMaximumPriorityQueue<TPriority>()
+        {
+            return new FibonacciHeap<string, TPriority>(PriorityQueueType.Maximum);
         }
     }
 }

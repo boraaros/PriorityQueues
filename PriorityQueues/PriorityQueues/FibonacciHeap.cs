@@ -27,9 +27,9 @@ namespace PriorityQueues
 
         private readonly Guid identifier;
 
-        private IComparer<TPriority> comparer;
+        private readonly Func<TPriority, TPriority, int> Compare;
 
-        private FibonacciNode minimum;
+        private FibonacciNode head;
 
         public TItem Peek
         {
@@ -39,7 +39,7 @@ namespace PriorityQueues
                 {
                     throw new InvalidOperationException("Heap contains no elements");
                 }
-                return minimum.Item; 
+                return head.Item; 
             }
         }
 
@@ -51,23 +51,34 @@ namespace PriorityQueues
                 {
                     throw new InvalidOperationException("Binary heap does not contain elements");
                 }
-                return minimum.Priority;
+                return head.Priority;
             }
         }
 
         public int Count { get; private set; }
 
-        public FibonacciHeap(IComparer<TPriority> comparer = null)
+        public FibonacciHeap(PriorityQueueType type, IComparer<TPriority> comparer = null)
         {
-            if (comparer != null)
+            if (comparer == null)
             {
-                this.comparer = comparer;
+                throw new ArgumentNullException("comparer");
             }
-            else
+            switch (type)
             {
-                this.comparer = Comparer<TPriority>.Default;
+                case PriorityQueueType.Minimum:
+                    Compare = (x, y) => comparer.Compare(x, y);
+                    break;
+                case PriorityQueueType.Maximum:
+                    Compare = (x, y) => comparer.Compare(y, x);
+                    break;
+                default: throw new ArgumentException(string.Format("Unknown priority queue type: {0}", type));
             }
             identifier = Guid.NewGuid();
+        }
+
+        public FibonacciHeap(PriorityQueueType type)
+            : this(type, Comparer<TPriority>.Default)
+        {
         }
 
         public IEnumerator<TItem> GetEnumerator()
@@ -97,15 +108,15 @@ namespace PriorityQueues
 
             if (Count == 0)
             {
-                node.Left = node.Right = minimum = node;
+                node.Left = node.Right = head = node;
             }
             else
             {
-                Paste(minimum, node);
+                Paste(head, node);
 
-                if (comparer.Compare(minimum.Priority, priority) > 0)
+                if (Compare(head.Priority, priority) > 0)
                 {
-                    minimum = node;
+                    head = node;
                 }
             }
             Count++;
@@ -131,15 +142,15 @@ namespace PriorityQueues
             {
                 throw new ArgumentException("Heap does not contain this node!");
             }
-            if (node.Parent != null && comparer.Compare(node.Parent.Priority, priority) > 0)
+            if (node.Parent != null && Compare(node.Parent.Priority, priority) > 0)
             {
                 CutNode(node);
             }
             node.Priority = priority;
 
-            if (comparer.Compare(minimum.Priority, priority) > 0)
+            if (Compare(head.Priority, priority) > 0)
             {
-                minimum = node;
+                head = node;
             }
         }
 
@@ -149,26 +160,26 @@ namespace PriorityQueues
             {
                 throw new InvalidOperationException("Heap is empty!");
             }
-            FibonacciNode min = minimum;
+            FibonacciNode h = head;
 
             if (Count == 1)
             {
-                minimum = null;
+                head = null;
                 Count--;
-                min.HeapIdentifier = Guid.Empty;
-                return min.Item;
+                h.HeapIdentifier = Guid.Empty;
+                return h.Item;
             }
-            while (minimum.Degree > 0)
+            while (head.Degree > 0)
             {
-                CutNode(minimum.FirstChild);
+                CutNode(head.FirstChild);
             }
             Concatenate();
-            minimum.Left.Right = minimum.Right;
-            minimum.Right.Left = minimum.Left;
-            minimum = SearchNewMinimum();
+            head.Left.Right = head.Right;
+            head.Right.Left = head.Left;
+            head = SearchNewMinimum();
             Count--;
-            min.HeapIdentifier = Guid.Empty;
-            return min.Item;
+            h.HeapIdentifier = Guid.Empty;
+            return h.Item;
         }
 
         public void Remove(IPriorityQueueEntry<TItem> entry)
@@ -189,7 +200,7 @@ namespace PriorityQueues
                 throw new ArgumentException("Heap does not contain this node!");
             }
             CutNode(temp);
-            minimum = temp;
+            head = temp;
             Dequeue();
         }
 
@@ -200,16 +211,16 @@ namespace PriorityQueues
                 entry.HeapIdentifier = Guid.Empty;
             }
             Count = 0;
-            minimum = null;
+            head = null;
         }
 
         private IEnumerable<FibonacciNode> Enumerate()
         {
-            if (minimum == null)
+            if (head == null)
             {
                 yield break;
             }
-            var current = minimum;
+            var current = head;
             do
             {
                 foreach (var node in EnumerateBranch(current))
@@ -218,7 +229,7 @@ namespace PriorityQueues
                 }
                 current = current.Right;
             }
-            while (current != minimum);
+            while (current != head);
         }
 
         private IEnumerable<FibonacciNode> EnumerateBranch(FibonacciNode root)
@@ -241,22 +252,22 @@ namespace PriorityQueues
 
         private FibonacciNode SearchNewMinimum()
         {
-            FibonacciNode min = minimum.Right;
-            for (FibonacciNode node = minimum.Right.Right; node != minimum.Right; node = node.Right)
+            FibonacciNode h = head.Right;
+            for (FibonacciNode node = head.Right.Right; node != head.Right; node = node.Right)
             {
-                if (comparer.Compare(min.Priority, node.Priority) > 0)
+                if (Compare(h.Priority, node.Priority) > 0)
                 {
-                    min = node;
+                    h = node;
                 }
             }
-            return min;
+            return h;
         }
 
         private void Concatenate()
         {
             IDictionary<int, FibonacciNode> concat = new Dictionary<int, FibonacciNode>();
 
-            for (FibonacciNode node = minimum.Right; node != minimum; )
+            for (FibonacciNode node = head.Right; node != head; )
             {
                 FibonacciNode next = node.Right;
                 bool cont = true;
@@ -272,7 +283,7 @@ namespace PriorityQueues
                     {
                         FibonacciNode n = concat[node.Degree];
                         concat.Remove(node.Degree);
-                        if (comparer.Compare(n.Priority, node.Priority) > 0)
+                        if (Compare(n.Priority, node.Priority) > 0)
                         {
                             Merge(node, n);
                         }
@@ -335,7 +346,7 @@ namespace PriorityQueues
                 node.Right.Left = node.Left;
                 node.Left.Right = node.Right;
             }
-            Paste(minimum, node);
+            Paste(head, node);
             node.Parent.Degree--;
             if (node.Parent.IsMarked)
             {

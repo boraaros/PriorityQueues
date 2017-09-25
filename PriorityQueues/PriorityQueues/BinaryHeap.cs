@@ -24,7 +24,8 @@ namespace PriorityQueues
         private readonly Guid identifier;
         private const int InitialSize = 16;
         private const int Degree = 2;
-        private IComparer<TPriority> comparer;
+
+        private readonly Func<TPriority, TPriority, int> Compare;
 
         private BinaryHeapNode[] heap;
 
@@ -54,18 +55,29 @@ namespace PriorityQueues
 
         public int Count { get; private set; }
 
-        public BinaryHeap(IComparer<TPriority> comparer = null)
+        public BinaryHeap(PriorityQueueType type, IComparer<TPriority> comparer)
         {
-            if (comparer != null)
+            if (comparer == null)
             {
-                this.comparer = comparer;
+                throw new ArgumentNullException("comparer");
             }
-            else
+            switch (type)
             {
-                this.comparer = Comparer<TPriority>.Default;
+                case PriorityQueueType.Minimum:
+                    Compare = (x, y) => comparer.Compare(x, y);
+                    break;
+                case PriorityQueueType.Maximum:
+                    Compare = (x, y) => comparer.Compare(y, x);
+                    break;
+                default: throw new ArgumentException(string.Format("Unknown priority queue type: {0}", type));
             }
             identifier = Guid.NewGuid();
             heap = new BinaryHeapNode[InitialSize];
+        }
+
+        public BinaryHeap(PriorityQueueType type)
+            : this(type, Comparer<TPriority>.Default)
+        {
         }
 
         public IEnumerator<TItem> GetEnumerator()
@@ -107,9 +119,9 @@ namespace PriorityQueues
             {
                 throw new InvalidOperationException("Binary heap is empty!");
             }
-            BinaryHeapNode min = heap[1];
+            BinaryHeapNode head = heap[1];
             Remove(heap[1]);
-            return min.Item;
+            return head.Item;
         }
 
         public void UpdatePriority(IPriorityQueueEntry<TItem> entry, TPriority priority)
@@ -177,7 +189,7 @@ namespace PriorityQueues
             BinaryHeapNode parent = Parent(node.Index);
             int to = node.Index;
 
-            while (parent != null && comparer.Compare(parent.Priority, node.Priority) > 0)
+            while (parent != null && Compare(parent.Priority, node.Priority) > 0)
             {
                 int grandParent = parent.Index / Degree;
                 int temp = parent.Index;
@@ -228,7 +240,7 @@ namespace PriorityQueues
             }
             else
             {
-                return comparer.Compare(heap[temp + 1].Priority, heap[temp].Priority) > 0 ?
+                return Compare(heap[temp + 1].Priority, heap[temp].Priority) > 0 ?
                 heap[temp] : heap[temp + 1];
             }
         }
