@@ -1,9 +1,0 @@
-version: 1.0.{build}
-nuget:
-  project_feed: true
-build:
-  publish_nuget: true
-  include_nuget_references: true
-  verbosity: detailed
-after_build:
-- cmd: nuget push <nupkg_file> -ApiKey y4oth7tydtab7wavuqshr8to -Source https://ci.appveyor.com/nuget/boraaros-lpfvay2pc91x/api/v2/package
