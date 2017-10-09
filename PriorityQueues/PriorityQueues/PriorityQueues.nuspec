@@ -6,6 +6,7 @@
     <authors>Adrian Bilics</authors>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/boraaros/PriorityQueues</projectUrl>
+    <iconUrl>https://github.com/boraaros/PriorityQueues/blob/master/icon_128x128.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>C# High-speed binary heap and Fibonacci heap implementation</description>
     <tags>heap priority queue fibonacci binary</tags>
