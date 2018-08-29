@@ -4,12 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>PriorityQueues_boraaros</PackageId>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Authors>Adrian Bilics</Authors>
     <Description>Efficient binary heap and Fibonacci heap implementation</Description>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/boraaros/PriorityQueues/tree/master/PriorityQueues</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/boraaros/Alligator.Solver/master/Icon.gif</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/boraaros/PriorityQueues/master/Icon.png</PackageIconUrl>
     <PackageTags>priority-queue binary-heap fibonacci-heap</PackageTags>
     <PackageReleaseNotes>Update from .NET Framework 4.5 to .NET Standard 2.0</PackageReleaseNotes>
   </PropertyGroup>
