@@ -1,10 +1,17 @@
 # PriorityQueues
-* Clean and simple source code
-* High-speed algorithms
-* LINQ (IEnumerable) support
-* Minimum and maximum priority queue
-* Custom priority comparer allowed
-* Lot of unit tests
+
+[![Build status](https://ci.appveyor.com/api/projects/status/g7kufmaqph84fkk5/branch/master?svg=true)](https://ci.appveyor.com/project/boraaros/priorityqueues/branch/master)
+[![NuGet](https://img.shields.io/nuget/v/PriorityQueues_boraaros.svg)](https://www.nuget.org/packages/PriorityQueues_boraaros)
+[![NuGet](https://img.shields.io/nuget/dt/PriorityQueues_boraaros.svg)](https://github.com/boraaros/PriorityQueues_boraaros)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/boraaros/PriorityQueues/blob/master/LICENSE)
+
+## Source code
+* :heavy_check_mark: Clean and simple source code
+* :heavy_check_mark: High-speed algorithms
+* :heavy_check_mark: LINQ (IEnumerable) support
+* :heavy_check_mark: Minimum and maximum priority queue
+* :heavy_check_mark: Custom priority comparer allowed
+* :heavy_check_mark: Lot of unit tests
 
 ## Example
 ```cs
@@ -35,3 +42,12 @@ int count = myPriorityQueue.Count; // 0
 |Dequeue     |  O(log n)    |   O(log n)    |
 |Update      |  O(log n)    |   O(1)        |
 |Remove      |  O(log n)    |   O(log n)    |
+
+## Wikipedia links
+[Priority queue](https://en.wikipedia.org/wiki/Priority_queue)
+
+[Heap](https://en.wikipedia.org/wiki/Heap_(data_structure))
+
+[Binary heap](https://en.wikipedia.org/wiki/Binary_heap)
+
+[Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap)
